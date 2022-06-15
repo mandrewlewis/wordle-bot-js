@@ -1,0 +1,4 @@
+commonLettersRanked
+startingWords
+wordsRanked
+wordsExtensive
