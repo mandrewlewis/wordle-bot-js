@@ -16,11 +16,18 @@ let guess = '';
 let guessLetters = [];
 let regEx;
 
+//debug
+
 while (wordKey !== [1,1,1,1,1]) {
+
+    console.log(`\n\n\nTurn = ${turn}`);
+    console.log('Possible words = ' + possibleWords.length);
 
     // Select guess
     if (turn === 0) {
-        guess = startingWords[Math.random(0, startingWords.length)];
+        let randInt = Math.floor(Math.random() * (startingWords.length));
+        guess = startingWords[randInt];
+        console.log({guess});
     }
     else if (possibleWords.length > 0) {
         guess = possibleWords[0];
@@ -34,6 +41,15 @@ while (wordKey !== [1,1,1,1,1]) {
     }
 
     guessLetters = guess.split('');
+    console.log(guessLetters);
+
+    
+    // Get results from user here
+    for (let i=0; i<5; i++) {
+        wordKey[i] = +window.prompt(`My guess is: ${guess}\nInput feedback ${i+1}:`);
+    }
+    console.log(wordKey);
+
 
 
     //
@@ -45,42 +61,54 @@ while (wordKey !== [1,1,1,1,1]) {
         notInDictionary = false;
         continue;
     }
-    
 
-    // Break if wordle solved
-    if (wordKey === [1,1,1,1,1]) break;
+    // Wordle solved
+    if (wordKey.join('') === '11111') break;
 
 
-    // Eliminate wrong letters and protect possible/correct letters
+    // (A) Eliminate wrong letters and protect possible/correct letters
     for (let i=0; i < 5; i++) {
         if (wordKey[i] === 0 && !wrongLetters.includes(guessLetters[i]) && !possibleLetters.includes(guessLetters[i])) {
-            letters.splice(letters.indexOf(guessLetters[i]),1);
             wrongLetters.push(guessLetters[i]);    
         }
         else if (wordKey[i] !== 0 && !possibleLetters.includes(guessLetters[i])) {
             possibleLetters.push(guessLetters[i]);
         }
-        else if (wordKey[i] === 0 && possibleLetters.includes(guessLetters)) {
+        else if (wordKey[i] === 0 && possibleLetters.includes(guessLetters[i])) {
             // remove words that have this double letter
             possibleWords = possibleWords.filter(word => {
                 let temp = word.split(''); // [a b c f y]
                 temp.splice(temp.indexOf(guessLetters[i]),1);
-                return !temp.includes(guessLetters[i]);
+                if (temp.includes(guessLetters[i])) { console.log(word); return false; }
+                return true;
             });
         }
     }
+    console.log(`wrongLetters: ${wrongLetters}`);
+    console.log(`possLetters: ${possibleLetters}`);
+    console.log(`guessLetters: ${guessLetters}`);
 
-
-    // Eliminate words that contain wrong letters
-    regEx = new RegExp(wrongLetters, 'gi');
+    console.log(`possibleWords: ${possibleWords.length}`);
+    // (B) Eliminate words that contain wrong letters
+    regEx = new RegExp(`[${wrongLetters.join('')}]`, 'gi');
+    console.log(`regex: ${regEx}`);
     possibleWords = possibleWords.filter(word => {
-        return !regEx.test(word);
+        let goodWord = true;
+        wrongLetters.forEach(letter => {
+            if (word.split('').includes(letter)) {goodWord = false; return;}
+        });
+        return goodWord;
     })
     extraWords = extraWords.filter(word => {
-        return !regEx.test(word);
+        let goodWord = true;
+        wrongLetters.forEach(letter => {
+            if (word.split('').includes(letter)) {goodWord = false; return;}
+        });
+        return goodWord;
     })
+    console.log(`after (B): ${possibleWords.length}`);
 
-    // Narrow word list that contain misplaced letters somewhere
+    // (C) Narrow word list that contain misplaced letters somewhere
     for (let i=0; i<5; i++) {
         if (wordKey[i] === -1) {
             possibleWords = possibleWords.filter(word => {
@@ -91,9 +119,11 @@ while (wordKey !== [1,1,1,1,1]) {
             });
         }
     }
+    console.log(`after (C): ${possibleWords.length}`);
 
-    // Catch case when misplaced letter is actually in correct spot
-    for (let i=0; i<5, i++) {
+    // (D) Catch case when word key says 'misplaced' => 
+    // should eliminate words that have correct letter in that spot
+    for (let i=0; i<5; i++) {
         if (wordKey[i] === -1) {
             possibleWords = possibleWords.filter(word => {
                 return word[i] !== guessLetters[i];
@@ -103,10 +133,11 @@ while (wordKey !== [1,1,1,1,1]) {
             })
         }
     }
+    console.log(`after (D): ${possibleWords.length}`);
 
-    // Narrow list to words with letters in correct places
-    for (let i=0; i<5, i++) {
-        if (wordKey[i] === -1) {
+    // (E) Narrow list to words with letters in correct places
+    for (let i=0; i<5; i++) {
+        if (wordKey[i] === 1) {
             possibleWords = possibleWords.filter(word => {
                 return word[i] === guessLetters[i];
             })
@@ -115,6 +146,7 @@ while (wordKey !== [1,1,1,1,1]) {
             })
         }
     }
+    console.log(`after (E): ${possibleWords.length}`);
 
     turn += 1;
     if (turn > 5) {
