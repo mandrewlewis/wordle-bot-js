@@ -90,6 +90,12 @@ function sendFeedback(round, nextRow) {
         letterButtons.shift();
     }
 
+    //Win condition
+    if (userArray.join('') === '11111') {
+        alert('You won!');
+        return;
+    }
+
     //Color and freeze next row's green letters
     for (let i=0; i<5; i++) {
         if (round === 6 || userArray[i] !== 1) continue;
