@@ -10,6 +10,7 @@
     flex-direction: column;
     align-items: center;
     padding: 50px;
+    user-select: none;
 }
 
 .round {
@@ -35,6 +36,19 @@
     font-weight: 900;
     font-size: 230%;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+@keyframes pop {
+    50% { transform: scale(110%); }
+    100% { transform: scale(100%); }
+}
+
+.none:active,
+.correct:active,
+.misplaced:active,
+.wrong:active {
+    animation: pop 0.5s;
 }
 
 .correct {
