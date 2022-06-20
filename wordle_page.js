@@ -6,7 +6,7 @@ const btnThree = document.querySelector('#btnThree');
 const btnFour = document.querySelector('#btnFour');
 const btnFive = document.querySelector('#btnFive');
 const btnSix = document.querySelector('#btnSix');
-let userArray = [];
+let userArray = [0,0,0,0,0];
 
 // Button listner
 btnOne.addEventListener('click', e => {
@@ -81,8 +81,21 @@ function checkValidFeedback() {
 function sendFeedback(round, nextRow) {
     //Freeze each letter and update user array
     for (let i=0; i<5; i++) {
+        let color = letterButtons[0].classList[2];
+        if (color === 'wrong') userArray[i] = 0;
+        else if (color === 'misplaced') userArray[i] = -1;
+        else if (color === 'correct') userArray[i] = 1;
+
         letterButtons[0].classList.add('freeze');
         letterButtons.shift();
+    }
+
+    //Color and freeze next row's green letters
+    for (let i=0; i<5; i++) {
+        if (round === 6 || userArray[i] !== 1) continue;
+        letterButtons[i].classList.remove('none');
+        letterButtons[i].classList.add('correct');
+        letterButtons[i].classList.add('freeze');
     }
 
     // Send feedback and get new word to guess
