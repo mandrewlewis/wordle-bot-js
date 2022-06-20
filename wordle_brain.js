@@ -18,37 +18,34 @@ let regEx;
 
 //debug
 
-while (wordKey !== [1,1,1,1,1]) {
-
-    console.log(`\n\n\nTurn = ${turn}`);
-    console.log('Possible words = ' + possibleWords.length);
-
+export function getNextWord(turn) {
     // Select guess
     if (turn === 0) {
         let randInt = Math.floor(Math.random() * (startingWords.length));
         guess = startingWords[randInt];
         console.log({guess});
+        return guess;
     }
     else if (possibleWords.length > 0) {
-        guess = possibleWords[0];
+        return possibleWords[0];
+        
     }
     else if (possibleWords.length === 0 && extraWords > 0) {
-        guess = extraWords[Math.random(0, extraWords.length)];
+        let randInt = Math.floor(Math.random() * (extraWords.length));
+        guess = extraWords[randInt];
+        return guess;
     }
     else {
-        alert('Error: Could not find a valid word to guess');
-        break;
+        alert('Critical Error: Could not find a valid word to guess');
+        return;
     }
+}
 
-    guessLetters = guess.split('');
-    console.log(guessLetters);
 
-    
-    // Get results from user here
-    for (let i=0; i<5; i++) {
-        // wordKey[i] = +window.prompt(`My guess is: ${guess}\nInput feedback ${i+1}:`);
-        wordKey[i] = 1; //debug for html editing
-    }
+
+export function crunchData(guessLetters, wordKey) {
+
+
     console.log(wordKey);
 
 
@@ -60,11 +57,8 @@ while (wordKey !== [1,1,1,1,1]) {
         possibleWords.splice(possibleWords.indexOf(guess),1);
         if (extraWords.includes(guess)) extraWords.splice(extraWords.indexOf(guess),1);
         notInDictionary = false;
-        continue;
+        return;
     }
-
-    // Wordle solved
-    if (wordKey.join('') === '11111') break;
 
 
     // (A) Eliminate wrong letters and protect possible/correct letters
@@ -91,8 +85,6 @@ while (wordKey !== [1,1,1,1,1]) {
 
     console.log(`possibleWords: ${possibleWords.length}`);
     // (B) Eliminate words that contain wrong letters
-    regEx = new RegExp(`[${wrongLetters.join('')}]`, 'gi');
-    console.log(`regex: ${regEx}`);
     possibleWords = possibleWords.filter(word => {
         let goodWord = true;
         wrongLetters.forEach(letter => {
@@ -148,12 +140,5 @@ while (wordKey !== [1,1,1,1,1]) {
         }
     }
     console.log(`after (E): ${possibleWords.length}`);
-
-    turn += 1;
-    if (turn > 5) {
-        alert("I'm sorry :[ I tried my best.");
-        break;
-    }
-
 
 }

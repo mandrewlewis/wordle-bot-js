@@ -1,3 +1,5 @@
+import { getNextWord, crunchData } from "./wordle_brain.js";
+
 const toggleList = ['none','wrong','misplaced','correct'];
 const letterButtons = [...document.querySelectorAll('.letter')];
 const btnOne = document.querySelector('#btnOne');
@@ -10,9 +12,7 @@ let userArray = [0,0,0,0,0];
 
 
 //Get initial word
-//add function here
-let displayLetters = 'ROATE'.split('');
-
+let displayLetters = getNextWord(0).split('');
 //Display the letters in DOM
 for (let i=0; i<5; i++) {
     letterButtons[i].innerHTML = displayLetters[i];
@@ -22,39 +22,39 @@ for (let i=0; i<5; i++) {
 // Button listner
 btnOne.addEventListener('click', e => {
     if (!checkValidFeedback()) return;
-    sendFeedback(1, 'two');
     btnOne.disabled = true;
     btnOne.style.visibility = 'hidden';
+    sendFeedback(1, 'two');
 });
 btnTwo.addEventListener('click', e => {
     if (!checkValidFeedback()) return;
-    sendFeedback(2, 'three');
     btnTwo.disabled = true;
     btnTwo.style.visibility = 'hidden';
+    sendFeedback(2, 'three');
 });
 btnThree.addEventListener('click', e => {
     if (!checkValidFeedback()) return;
-    sendFeedback(3, 'four');
     btnThree.disabled = true;
     btnThree.style.visibility = 'hidden';
+    sendFeedback(3, 'four');
 });
 btnFour.addEventListener('click', e => {
     if (!checkValidFeedback()) return;
-    sendFeedback(4, 'five');
     btnFour.disabled = true;
     btnFour.style.visibility = 'hidden';
+    sendFeedback(4, 'five');
 });
 btnFive.addEventListener('click', e => {
     if (!checkValidFeedback()) return;
-    sendFeedback(5, 'six');
     btnFive.disabled = true;
     btnFive.style.visibility = 'hidden';
+    sendFeedback(5, 'six');
 });
 btnSix.addEventListener('click', e => {
     if (!checkValidFeedback()) return;
-    sendFeedback(6, 'seven');
     btnSix.disabled = true;
     btnSix.style.visibility = 'hidden';
+    sendFeedback(6, 'seven');
 });
 
 
@@ -106,28 +106,28 @@ function sendFeedback(round, nextRow) {
         alert('You won!');
         return;
     }
+    //Lose condition
+    if (round === 6) { alert('you lost!'); return;}
 
+    //////
     // Send feedback and get new word to guess
-    let displayLetters = 'APPLE'; //getNextWord().split('');
+    crunchData(displayLetters, userArray);
+    displayLetters = getNextWord(round).split('');
+    //////
 
     //Setup new row before changing visibility
     for (let i=0; i<5; i++) {
+        if (round === 6) continue;
         //Display new letters in DOM
         letterButtons[i].innerHTML = displayLetters[i];
         
         //Color and freeze next row's green letters
-        if (round === 6 || userArray[i] !== 1) continue;
+        if (userArray[i] !== 1) continue;
         letterButtons[i].classList.remove('none');
         letterButtons[i].classList.add('correct');
         letterButtons[i].classList.add('freeze');
     }
 
-    
-    
-
-
-
-    if (round === 6) { alert('you lost!'); return;}
     //Display new row
     let newRow = document.querySelector(`.round.${nextRow}`);
     newRow.style.visibility = 'visible';
