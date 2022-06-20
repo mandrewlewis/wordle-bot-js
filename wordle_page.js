@@ -8,6 +8,17 @@ const btnFive = document.querySelector('#btnFive');
 const btnSix = document.querySelector('#btnSix');
 let userArray = [0,0,0,0,0];
 
+
+//Get initial word
+//add function here
+let displayLetters = 'ROATE'.split('');
+
+//Display the letters in DOM
+for (let i=0; i<5; i++) {
+    letterButtons[i].innerHTML = displayLetters[i];
+}
+
+
 // Button listner
 btnOne.addEventListener('click', e => {
     if (!checkValidFeedback()) return;
@@ -96,21 +107,28 @@ function sendFeedback(round, nextRow) {
         return;
     }
 
-    //Color and freeze next row's green letters
+    // Send feedback and get new word to guess
+    let displayLetters = 'APPLE'; //getNextWord().split('');
+
+    //Setup new row before changing visibility
     for (let i=0; i<5; i++) {
+        //Display new letters in DOM
+        letterButtons[i].innerHTML = displayLetters[i];
+        
+        //Color and freeze next row's green letters
         if (round === 6 || userArray[i] !== 1) continue;
         letterButtons[i].classList.remove('none');
         letterButtons[i].classList.add('correct');
         letterButtons[i].classList.add('freeze');
     }
 
-    // Send feedback and get new word to guess
-    // let divLetters = getWord();
+    
+    
 
 
 
     if (round === 6) { alert('you lost!'); return;}
-    // Display new row
+    //Display new row
     let newRow = document.querySelector(`.round.${nextRow}`);
     newRow.style.visibility = 'visible';
 }
