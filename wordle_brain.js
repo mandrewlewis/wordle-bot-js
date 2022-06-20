@@ -23,7 +23,6 @@ export function getNextWord(turn) {
     if (turn === 0) {
         let randInt = Math.floor(Math.random() * (startingWords.length));
         guess = startingWords[randInt];
-        console.log({guess});
         return guess;
     }
     else if (possibleWords.length > 0) {
@@ -45,12 +44,7 @@ export function getNextWord(turn) {
 
 export function crunchData(guessLetters, wordKey) {
 
-
-    console.log(wordKey);
-
-
-
-    //
+    // This is not functioning. Nothing in wordle_page is setting flag
     // button press should set notInDictionary flag to true
     //
     if (notInDictionary) {
@@ -74,14 +68,11 @@ export function crunchData(guessLetters, wordKey) {
             possibleWords = possibleWords.filter(word => {
                 let temp = word.split(''); // [a b c f y]
                 temp.splice(temp.indexOf(guessLetters[i]),1);
-                if (temp.includes(guessLetters[i])) { console.log(word); return false; }
+                if (temp.includes(guessLetters[i])) { return false; }
                 return true;
             });
         }
     }
-    console.log(`wrongLetters: ${wrongLetters}`);
-    console.log(`possLetters: ${possibleLetters}`);
-    console.log(`guessLetters: ${guessLetters}`);
 
     console.log(`possibleWords: ${possibleWords.length}`);
     // (B) Eliminate words that contain wrong letters
