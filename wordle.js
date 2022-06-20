@@ -46,7 +46,8 @@ while (wordKey !== [1,1,1,1,1]) {
     
     // Get results from user here
     for (let i=0; i<5; i++) {
-        wordKey[i] = +window.prompt(`My guess is: ${guess}\nInput feedback ${i+1}:`);
+        // wordKey[i] = +window.prompt(`My guess is: ${guess}\nInput feedback ${i+1}:`);
+        wordKey[i] = 1; //debug for html editing
     }
     console.log(wordKey);
 
